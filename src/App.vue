@@ -1,28 +1,59 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <h1>Airports</h1>
+    <Decoration color="red" />
+    <Decoration color="orange" />
+    <Decoration color="yellow" />
+    <AirportTable />
+    <Decoration color="green" />
+    <Decoration color="blue" />
+    <Decoration color="purple" />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import AirportTable from "./components/AirportTable.vue";
+import Decoration from "./components/Decoration.vue";
 
 export default {
-  name: "app",
   components: {
-    HelloWorld
+    AirportTable,
+    Decoration
   }
 };
 </script>
 
 <style lang="scss">
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: $color--eerie-black;
+  color: white;
+  margin: 0;
+  height: 100%;
+}
+
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: $font-family--primary;
+  font-size: $font-size--large;
+  font-weight: 400;
+  text-transform: uppercase;
 }
 </style>

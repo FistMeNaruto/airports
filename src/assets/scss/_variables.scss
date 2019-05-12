@@ -1,0 +1,35 @@
+// Colors
+// -------------------------
+$color--eerie-black: black;
+$color--platinum: #f1e3e4;
+
+// Fonts
+// -------------------------
+$font-family--primary: 'Monoton', sans-serif;
+$font-family--secondary: 'Orbitron', sans-serif;
+
+$font-size--base: 16px;
+$font-size--xlarge: 3.4rem; // 54.4px
+$font-size--large: 2.5rem; // 40px
+$font-size--xmedium: 1.5rem; // 24px
+$font-size--medium: 1.3rem; // 20.8px
+$font-size--xregular: 1.1rem; // 17.6px
+$font-size--regular: 1rem; // 16px
+$font-size--small: 0.9rem; // 14.4px
+
+// Transitions
+// -------------------------
+
+$easing--standard: cubic-bezier(0.4, 0, 0.2, 1);
+$easing--decelerate: cubic-bezier(0, 0, 0.2, 1);
+$easing--accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+// Responsive breakpoints
+// -------------------------
+$breakpoints: (
+  xsmall: 400px,
+  small: 640px,
+  medium: 960px,
+  large: 1200px,
+  xlarge: 1600px
+);
