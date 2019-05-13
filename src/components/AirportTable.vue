@@ -1,21 +1,77 @@
 <template>
   <div class="airport-table">
+    <Loader v-if="isLoading" />
     <div class="header" ref="header">
-      <div class="th">ICAO Code</div>
-      <div class="th wide">Name</div>
-      <div class="th text-center">Country</div>
-      <div class="th text-center">Continent</div>
-      <div class="th text-center">Elevation, ft</div>
-      <div class="th text-right">Type</div>
+      <div
+        class="th"
+        :class="{
+          sort: currentSort === 'ident',
+          desc: currentSortDir === 'desc'
+        }"
+        @click="sort('ident')"
+      >
+        ICAO Code
+      </div>
+      <div
+        class="th wide"
+        :class="{
+          sort: currentSort === 'name',
+          desc: currentSortDir === 'desc'
+        }"
+        @click="sort('name')"
+      >
+        Name
+      </div>
+      <div
+        class="th text-center"
+        :class="{
+          sort: currentSort === 'iso_country',
+          desc: currentSortDir === 'desc'
+        }"
+        @click="sort('iso_country')"
+      >
+        Country
+      </div>
+      <div
+        class="th text-center"
+        :class="{
+          sort: currentSort === 'continent',
+          desc: currentSortDir === 'desc'
+        }"
+        @click="sort('continent')"
+      >
+        Continent
+      </div>
+      <div
+        class="th text-center"
+        :class="{
+          sort: currentSort === 'elevation_ft',
+          desc: currentSortDir === 'desc'
+        }"
+        @click="sort('elevation_ft')"
+      >
+        Elevation, ft
+      </div>
+      <div
+        class="th text-right"
+        :class="{
+          sort: currentSort === 'type',
+          desc: currentSortDir === 'desc'
+        }"
+        @click="sort('type')"
+      >
+        Type
+      </div>
     </div>
     <RecycleScroller
       class="scroller"
-      :items="airports"
+      :items="sortedAirports"
       :item-size="33"
       key-field="ident"
       v-slot="{ item }"
-      @resize="resizeHeader"
+      @resize="resizeTable"
       ref="scroller"
+      v-if="!isLoading"
     >
       <div class="airport">
         <div class="td">{{ item.ident }}</div>
@@ -32,9 +88,15 @@
 </template>
 
 <script>
+import Loader from "./Loader";
+
 export default {
+  components: {
+    Loader
+  },
   data() {
     return {
+      isLoading: true,
       airports: [],
       types: {
         heliport: "Heliport",
@@ -44,24 +106,55 @@ export default {
         balloonport: "Balloonport",
         closed: "Closed",
         seaplane_base: "Seaplane base"
-      }
+      },
+      currentSort: "ident",
+      currentSortDir: "asc"
     };
+  },
+  computed: {
+    sortedAirports() {
+      const airports = this.airports;
+      return airports.sort((a, b) => {
+        let modifier = 1;
+        if (this.currentSortDir === "desc") modifier = -1;
+        if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+        if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+        // equal
+        return 0;
+      });
+    }
   },
   mounted() {
     this.axios
       .get("https://datahub.io/core/airport-codes/r/airport-codes.json")
       .then(response => {
-        this.airports = response.data;
+        this.airports = response.data.map(airport => {
+          return {
+            ident: airport.ident,
+            name: airport.name,
+            iso_country: airport.iso_country,
+            continent: airport.continent,
+            elevation_ft: parseInt(airport.elevation_ft, 10),
+            type: airport.type
+          };
+        });
+        this.isLoading = false;
       });
   },
   methods: {
-    resizeHeader() {
+    resizeTable() {
       this.$refs.header.style.width = `${
         this.$refs.scroller.$refs.wrapper.offsetWidth
       }px`;
+
+      this.$refs.scroller.$el.style.height = `${this.$el.offsetHeight -
+        this.$refs.header.offsetHeight}px`;
     },
-    mapType(type) {
-      return this.types[type];
+    sort(column) {
+      if (column === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+      }
+      this.currentSort = column;
     }
   }
 };
@@ -77,10 +170,11 @@ export default {
   padding: 0 20px;
   margin: 20px 0;
   font-family: $font-family--secondary;
+  position: relative;
 }
 
 .scroller {
-  height: 450px;
+  height: 300px;
 }
 
 .header {
@@ -106,6 +200,22 @@ export default {
   display: flex;
   align-items: flex-end;
   font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+
+  &.sort::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    margin: auto 0 auto 10px;
+    transform: rotate(45deg);
+    border-bottom: 2px solid $color--platinum;
+    border-right: 2px solid $color--platinum;
+  }
+
+  &.sort.desc::after {
+    transform: rotate(-135deg);
+  }
 }
 
 .td {
