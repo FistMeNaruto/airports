@@ -87,7 +87,7 @@
         <div class="td text-center">
           {{ item.elevation_ft ? item.elevation_ft : "-" }}
         </div>
-        <div class="td text-right">{{ types[item.type] }}</div>
+        <div class="td text-right">{{ item.type }}</div>
       </div>
     </RecycleScroller>
   </div>
@@ -147,7 +147,7 @@ export default {
             iso_country: airport.iso_country,
             continent: airport.continent,
             elevation_ft: parseInt(airport.elevation_ft, 10),
-            type: airport.type
+            type: this.types[airport.type]
           };
         });
         this.isLoading = false;
