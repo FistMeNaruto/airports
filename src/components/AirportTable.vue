@@ -73,7 +73,13 @@
       ref="scroller"
       v-if="!isLoading"
     >
-      <div class="airport">
+      <div
+        class="airport"
+        :class="{
+          active: selectedAirport === item
+        }"
+        @click="$emit('select-airport', item)"
+      >
         <div class="td">{{ item.ident }}</div>
         <div class="td wide">{{ item.name }}</div>
         <div class="td text-center">{{ item.iso_country }}</div>
@@ -93,6 +99,12 @@ import Loader from "./Loader";
 export default {
   components: {
     Loader
+  },
+  props: {
+    selectedAirport: {
+      type: Object,
+      required: false
+    }
   },
   data() {
     return {
@@ -186,6 +198,20 @@ export default {
 
 .airport {
   display: flex;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background-color: transparentize($color--platinum, 0.8);
+  }
+
+  &.active {
+    background-color: transparentize(red, 0.8);
+
+    &:hover {
+      background-color: transparentize(red, 0.6);
+    }
+  }
 }
 
 .th,

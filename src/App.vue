@@ -4,21 +4,36 @@
     <Decoration color="red" />
     <Decoration color="orange" />
     <Decoration color="yellow" />
-    <AirportTable />
+    <AirportTable
+      :selected-airport="selectedAirport"
+      @select-airport="selectedAirport = $event"
+    />
     <Decoration color="green" />
     <Decoration color="blue" />
     <Decoration color="purple" />
+    <SelectedAirport
+      v-if="selectedAirport"
+      :selected-airport="selectedAirport"
+      @click.native="selectedAirport = null"
+    />
   </div>
 </template>
 
 <script>
 import AirportTable from "./components/AirportTable.vue";
 import Decoration from "./components/Decoration.vue";
+import SelectedAirport from "./components/SelectedAirport.vue";
 
 export default {
   components: {
     AirportTable,
-    Decoration
+    Decoration,
+    SelectedAirport
+  },
+  data() {
+    return {
+      selectedAirport: null
+    };
   }
 };
 </script>
